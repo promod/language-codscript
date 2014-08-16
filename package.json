@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "name": "language-codscript",
+  "description": "Atom language support for CoDScript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ingramz/language-codscript.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ingramz/language-codscript/issues"
+  },
+  "engines": {
+    "atom": "*",
+    "node": "*"
+  }
+}

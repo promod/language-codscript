@@ -1,0 +1,10 @@
+'scopeName': 'source.gsc'
+'name': 'CoDScript'
+'fileTypes': [
+  'gsc'
+]
+'patterns': [
+  {
+    'include': 'source.c'
+  }
+]
