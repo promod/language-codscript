@@ -4,11 +4,11 @@
   "description": "Atom language support for CoDScript",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ingramz/language-codscript.git"
+    "url": "https://github.com/promod/language-codscript.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Ingramz/language-codscript/issues"
+    "url": "https://github.com/promod/language-codscript/issues"
   },
   "engines": {
     "atom": "*",
