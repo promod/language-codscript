@@ -1,0 +1,32 @@
+'.source.gsc':
+  'func()':
+    'prefix': 'fn'
+    'body': '${1:func}(${2:param})\n{\n\t${3:/* code */}\n}'
+  '#include … ;':
+    'prefix': 'inc'
+    'body': '#include ${1};$0'
+  '#using_animtree("…");':
+    'prefix': 'atr'
+    'body': '#using_animtree("${1:animtree}");$0'
+'.source.gsc .meta.function.body.gsc':
+  'For Loop':
+    'prefix': 'for'
+    'body': 'for(${1:i} = 0; ${1:i} < ${2:count}; ${1:i}${3:++})\n{\n\t${4:/* code */}\n}'
+  'While Loop':
+    'prefix': 'while'
+    'body': 'while(${1:/* condition */})\n{\n\t${2:/* code */}\n}'
+  'If Condition':
+    'prefix': 'if'
+    'body': 'if(${1:/* condition */})\n{\n\t${2:/* code */}\n}'
+  'If Else':
+    'prefix': 'ife'
+    'body': 'if(${1:/* condition */})\n{\n\t${2:/* code */}\n}\nelse\n{\n\t${3:/* code */}\n}'
+  'Switch Statement':
+    'prefix': 'switch'
+    'body': 'switch(${1:/* expression */})\n{\n\tcase ${2:/* value */}:$0\n}'
+  'case':
+    'prefix': 'cs'
+    'body': 'case ${1:/* value */}:$0'
+  'iprintln':
+    'prefix': 'ipr'
+    'body': 'iprintln("${1:text}");$2'

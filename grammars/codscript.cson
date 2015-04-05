@@ -4,7 +4,316 @@
   'gsc'
 ]
 'patterns': [
+  # Include statement #include path;
   {
-    'include': 'source.c'
+    'begin': '#(include)'
+    'captures':
+      '1':
+        'name': 'keyword.control.include.gsc'
+    'end': ';'
+    'name': 'meta.preprocessor.c.include' # left intentionally to get the color from themes
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'match': '[A-Za-z_][A-Za-z_0-9]*(\\\\[A-Za-z_][A-Za-z_0-9]*)*';
+        'name': 'string.include.gsc'
+      }
+    ]
+  }
+  # Using animtree statement #using_animtree("str");
+  {
+    'begin': '#(using_animtree)'
+    'captures':
+      '1':
+        'name': 'keyword.control.using_animtree.gsc'
+    'end': ';'
+    'name': 'meta.preprocessor.c.include' # left intentionally to get the color from themes
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'include': '#string'
+      }
+    ]
+  }
+  # Outer developer comments, this can only be included once
+  {
+    'begin': '/#'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.developer.comment.begin.gsc'
+    'end': '#/'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.developer.comment.end.gsc'
+    'name': 'developer.block.gsc'
+    'patterns': [
+      {
+        'include': '#functiondef'
+      }
+    ]
+  }
+  {
+    'include': '#functiondef'
   }
 ]
+'repository':
+  # Unrecognized character sequence
+  'invalid':
+    'match': '[^ ]+?\\b'
+    'name': 'meta.invalid.illegal.character.gsc'
+  # Function definition: fun() {...}
+  'functiondef':
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      {
+        'begin': '(?=\\b[A-Za-z_][A-Za-z_0-9]*\\s*\\()'
+        'end': '(})'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.section.function.end.gsc'
+        'name': 'meta.function.gsc'
+        'patterns': [
+          {
+           'include': '#comments'
+          }
+          # keywords can't be used as identifiers for function names
+          {
+            'begin': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|game|level|self|true|false|undefined)\\s*\\('
+            'beginCaptures':
+              '1':
+                'name': 'entity.name.function.invalid.illegal.gsc'
+            'end': '\\)'
+            'name': 'meta.function.identifier.gsc'
+            'patterns': [
+              {
+                'include': '#parameters'
+              }
+            ]
+          }
+          {
+            'begin': '\\b([A-Za-z_][A-Za-z_0-9]*)\\s*\\('
+            'beginCaptures':
+              '1':
+                'name': 'entity.name.function.gsc'
+            'end': '\\)'
+            'name': 'meta.function.identifier.gsc'
+            'patterns': [
+              {
+                'include': '#parameters'
+              }
+            ]
+          }
+          {
+            'begin': '{'
+            'beginCaptures':
+              '0':
+                'name': 'punctuation.section.function.begin.gsc'
+            'end': '(?=})'
+            'name': 'meta.function.body.gsc'
+            'patterns': [
+              {
+                'include': '#devblockorcode'
+              }
+            ]
+          }
+        ]
+      }
+      {
+        'include': '#invalid'
+      }
+    ]
+  # Function definition parameters
+  'parameters':
+    'patterns': [
+      {
+        'include': '#comments'
+      }
+      # Keywords can't be variable identifiers
+      {
+        'begin': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|game|level|self|true|false|undefined)\\b'
+        'beginCaptures':
+          '0':
+            'name': 'variable.parameter.function.invalid.illegal.gsc'
+        'end': '(?:(,)|(?=[\\)]))'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.separator.parameter.gsc'
+        'patterns': [
+          {
+            'include': '#comments'
+          }
+          {
+            'include': '#invalid'
+          }
+        ]
+      }
+      {
+        'begin': '\\b[A-Za-z_][A-Za-z_0-9]*\\b'
+        'beginCaptures':
+          '0':
+            'name': 'variable.parameter.function.source.cs'
+        'end': '(?:(,)|(?=[\\)]))'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.separator.parameter.gsc'
+        'patterns': [
+          {
+            'include': '#comments'
+          }
+          {
+            'include': '#invalid'
+          }
+        ]
+      }
+      # Invalid parameter names
+      {
+        'begin': '\\b[^ ]+?\\b'
+        'beginCaptures':
+          '0':
+            'name': 'variable.parameter.function.invalid.illegal.gsc'
+        'end': '(?:(,)|(?=[\\)]))'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.definition.separator.parameter.gsc'
+        'patterns': [
+          {
+            'include': '#comments'
+          }
+          {
+            'include': '#invalid'
+          }
+        ]
+      }
+    ]
+  # Inner developer block or code; can be included only once
+  'devblockorcode':
+    'patterns': [
+      {
+        'begin': '/#'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.developer.comment.begin.gsc'
+        'end': '#/'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.developer.comment.end.gsc'
+        'name': 'developer.block.gsc'
+        'patterns': [
+          {
+            'include': '#code'
+          }
+        ]
+      }
+      {
+        'include': '#code'
+      }
+    ]
+  # Code inside function definitions' { } brackets
+  'code':
+    'patterns': [
+      {
+        'begin': '{'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.section.block.begin.gsc'
+        'end': '}'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.section.block.end.gsc'
+        'name': 'meta.block.gsc'
+        'patterns': [
+          {
+            'include': '#code'
+          }
+        ]
+      }
+      {
+        'include': '#comments'
+      }
+      {
+        'include': '#constants'
+      }
+      {
+        'include': '#keywords'
+      }
+      {
+        'include': '#stockfunctions_cod4'
+      }
+    ]
+  'comments':
+    'patterns': [
+      {
+        'begin': '/\\*'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.begin.gsc'
+        'end': '\\*/'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.end.gsc'
+        'name': 'comment.block.gsc'
+      }
+      {
+        'match': '\\*/.*\\n'
+        'name': 'invalid.illegal.stray-comment-end.gsc'
+      }
+      {
+        'begin': '//'
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.definition.comment.gsc'
+        'end': '\\n'
+        'name': 'comment.line.double-slash.gsc'
+      }
+    ]
+  # Language constants
+  'constants':
+    'patterns': [
+      {
+        'match': '\\b(true|false|undefined)\\b'
+        'name': 'constant.language.gsc'
+      }
+      {
+        'match': '(?:\\b|\\s)(?:(?:[1-9][0-9]*|0)?\\.[0-9]+|[1-9][0-9]*|0)\\b'
+        'name': 'constant.numeric.gsc'
+      }
+      {
+        'include': '#string'
+      }
+    ]
+  'string':
+    'captures':
+      '1':
+        'name': 'punctuation.definition.string.begin.gsc'
+      '2':
+        'name': 'constant.character.escape.gsc'
+      '3':
+        'name': 'invalid.illegal.unknown-escape.gsc'
+      '4':
+        'name': 'punctuation.definition.string.end.gsc'
+    'match': '(")(?:(\\\\["tnr\\\\]|&&[1-9])|(&&0|\\\\.)|[^"])*(")'
+    'name': 'string.quoted.double.gsc'
+  'keywords':
+    'patterns': [
+      {
+        'match': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill)\\b'
+        'name': 'keyword.control.gsc'
+      }
+      {
+        'match': '\\b(game|level|self)\\b'
+        'name': 'storage.identifier.gsc'
+      }
+    ]
+  'stockfunctions_cod4':
+    'captures':
+      '1':
+        'name': 'punctuation.whitespace.support.function.leading.gsc'
+      '2':
+        'name': 'support.function.stock.gsc'
+    'match': '(?i)(\\s*)\\b(endlobby|endparty|freehelicopter|getcorpseanim|getguid|getstat|getxuid|grenadeexplosioneffect|logstring|matchend|physicslaunch|quitlobby|quitparty|searchforonlinegames|sendleaderboards|sendranks|setcandamage|setdamagestage|setentertime|setplayerteamrank|setstat|setvehweapon|spawnhelicopter|spawnplane|startparty|startprivatematch|vibrate|animhasnotetrack|getangledelta|getanimlength|getmovedelta|getnotetracktimes|getnumparts|getpartname|gettagangles|gettagorigin|getclanid|getclanname|allclientsprint|allowspectateteam|announcement|ban|beginlocationselection|clientannouncement|clientprint|cloneplayer|disableweapons|dropitem|enableweapons|endlocationselection|getviewmodel|ismantling|isonladder|isplayernumber|isragdoll|istalking|kick|makedvarserverinfo|sayall|sayteam|setrank|setspawnweapon|setteamfortrigger|showscoreboard|startragdoll|suicide|updatedmscores|updatescores|finishplayerdamage|radiusdamage|setplayerignoreradiusdamage|addtestclient|assert|assertex|assertmsg|createprintchannel|iprintln|iprintlnbold|line|print|print3d|println|setprintchannel|getdvar|getdvarfloat|getdvarint|setdvar|loadfx|playfx|playfxontag|playloopedfx|setexpfog|spawnfx|triggerfx|visionsetnaked|visionsetnight|attach|delete|detach|detachall|detonate|disableaimassist|enableaimassist|enablelinkto|getattachignorecollision|getattachmodelname|getattachsize|getattachtagname|getent|getentarray|getentbynum|getentitynumber|getnormalhealth|getorigin|hide|hidepart|istouching|laseroff|laseron|linkto|localtoworldcoords|setcontents|setcursorhint|sethintstring|setmodel|setnormalhealth|setstablemissile|show|showallparts|showpart|showtoplayer|unlink|useby|usetriggerrequirelookat|closefile|fgetarg|fprintfields|fprintln|freadln|openfile|clearalltextafterhudelem|cleartargetent|destroy|fadeovertime|moveovertime|newclienthudelem|newhudelem|newteamhudelem|obituary|reset|scaleovertime|setclock|setclockup|setgametypestring|setmapnamestring|setplayernamestring|setpulsefx|setshader|settargetent|settenthstimer|settenthstimerup|settext|settimer|settimerup|setvalue|setwaypoint|earthquake|exitlevel|getarraykeys|getbrushmodelcenter|getnorthyaw|getstarttime|gettime|issplitscreen|isvalidgametype|map|mapexists|map_restart|setclientnamemode|setgameendtime|setmapcenter|setminimap|setvotenocount|setvotestring|setvotetime|setvoteyescount|setwinningplayer|setwinningteam|updateclientnames|worldentnumber|abs|acos|asin|atan|ceil|cos|floor|int|max|min|pointonsegmentnearesttopoint|randomfloat|randomfloatrange|randomint|randomintrange|sin|sqrt|tan|vectorfromlinetopoint|closeingamemenu|missile_createattractorent|missile_createattractororigin|missile_createrepulsorent|missile_createrepulsororigin|missile_deleteattractor|devaddpitch|devaddroll|devaddyaw|movegravity|moveto|movex|movey|movez|notsolid|rotatepitch|rotateroll|rotateto|rotatevelocity|rotateyaw|solid|objective_add|objective_current|objective_delete|objective_icon|objective_onentity|objective_position|objective_state|objective_team|pingplayer|physicsexplosioncylinder|physicsexplosionsphere|physicsjitter|physicsjolt|adsbuttonpressed|allowads|allowjump|allowsprint|anyammoforweaponmodes|attackbuttonpressed|buttonpressed|clearperks|closemenu|deactivatechannelvolumes|deactivatereverb|fragbuttonpressed|freezecontrols|getcurrentoffhand|getcurrentweapon|getfractionmaxammo|getfractionstartammo|getoffhandsecondaryclass|getplayerangles|getstance|getvelocity|getweaponammoclip|getweaponammostock|getweaponslist|getweaponslistprimaries|givemaxammo|givestartammo|giveweapon|hasperk|hasweapon|isonground|meleebuttonpressed|openmenu|openmenunomouse|playerads|playlocalsound|resetspreadoverride|secondaryoffhandbuttonpressed|setactionslot|setchannelvolumes|setclientdvar|setclientdvars|setdepthoffield|setmovespeedscale|setoffhandsecondaryclass|setorigin|setperk|setplayerangles|setreverb|setspreadoverride|setviewmodel|setviewmodeldepthoffield|setweaponammoclip|setweaponammostock|shellshock|stoplocalsound|stopshellshock|switchtooffhand|switchtoweapon|takeallweapons|takeweapon|unsetperk|usebuttonpressed|viewkick|precacheheadicon|precacheitem|precachelocationselector|precachemenu|precachemodel|precacherumble|precacheshader|precacheshellshock|precachestatusicon|precachestring|precacheturret|tablelookup|tablelookupistring|playrumblelooponentity|playrumblelooponposition|playrumbleonentity|playrumbleonposition|stopallrumbles|stoprumble|geteye|isalive|isplayer|ambientplay|ambientstop|musicplay|musicstop|playloopsound|playsound|playsoundasmaster|playsoundtoplayer|playsoundtoteam|soundexists|soundfade|stoploopsound|placespawnpoint|positionwouldtelefrag|spawn|spawnstruct|spawnturret|getsubstr|issubstr|strtok|tolower|logprint|resettimeout|setarchive|getassignedteam|getteamplayersalive|getteamradar|getteamscore|setteamradar|setteamscore|bullettrace|bullettracepassed|damageconetrace|physicstrace|playerphysicstrace|sightconetrace|sighttracepassed|clientclaimtrigger|clientreleasetrigger|releaseclaimedtrigger|setbottomarc|setleftarc|setrightarc|settoparc|isdefined|isstring|anglestoforward|anglestoright|anglestoup|closer|combineangles|distance|distance2d|distancesquared|length|lengthsquared|vectordot|vectorlerp|vectornormalize|vectortoangles|cleargoalyaw|clearlookatent|cleartargetyaw|clearturrettarget|fireweapon|getspeed|getspeedmph|resumespeed|setairresistance|setgoalyaw|sethoverparams|setlookatent|setmaxpitchroll|setneargoalnotifydist|setspeed|settargetyaw|setturningability|setturrettargetent|setturrettargetvec|setvehgoalpos|setvehicleteam|setyawspeed|disablegrenadetouchdamage|enablegrenadetouchdamage|getammocount|getweaponmodel|isweaponcliponly|isweapondetonationtimed|itemweaponsetammo|missile_settarget|weaponaltweaponname|weaponclass|weaponclipsize|weaponfiretime|weaponinventorytype|weaponisboltaction|weaponissemiauto|weaponmaxammo|weaponstartammo|weapontype)\\b(?=\\s*\\()'
