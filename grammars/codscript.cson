@@ -84,7 +84,7 @@
           }
           # keywords can't be used as identifiers for function names
           {
-            'begin': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|game|level|self|true|false|undefined)\\s*\\('
+            'begin': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|notify|game|level|self|true|false|undefined)\\s*\\('
             'beginCaptures':
               '1':
                 'name': 'entity.name.function.invalid.illegal.gsc'
@@ -136,7 +136,7 @@
       }
       # Keywords can't be variable identifiers
       {
-        'begin': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|game|level|self|true|false|undefined)\\b'
+        'begin': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|notify|game|level|self|true|false|undefined)\\b'
         'beginCaptures':
           '0':
             'name': 'variable.parameter.function.invalid.illegal.gsc'
@@ -157,7 +157,7 @@
         'begin': '\\b[A-Za-z_][A-Za-z_0-9]*\\b'
         'beginCaptures':
           '0':
-            'name': 'variable.parameter.function.source.cs'
+            'name': 'variable.parameter.function.gsc'
         'end': '(?:(,)|(?=[\\)]))'
         'endCaptures':
           '1':
@@ -245,6 +245,40 @@
       {
         'include': '#stockfunctions_cod4'
       }
+      {
+        'captures':
+          '1':
+            'name': 'entity.name.function.gsc'
+        'match': '\\b([A-Za-z_][A-Za-z_0-9]*)\\b(?=\\s*\\()'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'entity.name.function.gsc'
+        'match': '(?:[A-Za-z_][A-Za-z_0-9]*(?:\\\\[A-Za-z_][A-Za-z_0-9]*)*\\s*)?::\\s*([A-Za-z_][A-Za-z_0-9]*)'
+        'name': 'meta.preprocessor.c.include'
+      }
+      # Following two entries are not comprehensive lists, feel free to update
+
+      # These are case sensitive
+      {
+        'match': '\\.\s*(?:size|archivetime)\\b'
+        'name': 'constant.language.cod4mp.gsc'
+      }
+      # These most likely aren't.
+      {
+        'match': '(?i)\\.\s*(?:z|y|x|pers|psoffsettime|killcamentity|spectatorclient|hasradar|assists|kills|headiconteam|headicon|statusicon|deaths|maxhealth|sessionstate|sessionteam|type|model|physicsmodel|origin|angles|health|archived|glowalpha|glowcolor|hidewheninmenu|hidewhendead|foreground|sort|label|alpha|color|vertalign|horzalign|aligny|alignx|fontscale)\\b'
+        'name': 'constant.language.cod4mp.gsc'
+      }
+      # If all else fails
+      {
+        'match': '\\.\s*[A-Za-z_][A-Za-z_0-9]*'
+        'name': 'variable.other.dot-access.gsc'
+      }
+      {
+        'match': '[A-Za-z_][A-Za-z_0-9]*'
+        'name': 'variable.other.gsc'
+      }
     ]
   'comments':
     'patterns': [
@@ -284,9 +318,21 @@
         'name': 'constant.numeric.gsc'
       }
       {
+        'match': '%[A-Za-z_][A-Za-z_0-9]*'
+        'name': 'support.animation.gsc'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'support.punctuation.definition.localized.string.begin.gsc'
+        'match': '(&)(?="[^"]*")'
+        'name': 'localized.string.quoted.double.gsc'
+      }
+      {
         'include': '#string'
       }
     ]
+  # This rule also warns about useless string escapes and use of &&0
   'string':
     'captures':
       '1':
@@ -296,18 +342,63 @@
       '3':
         'name': 'invalid.illegal.unknown-escape.gsc'
       '4':
+        'name': 'invalid.deprecated.unknown-escape.gsc'
+      '5':
         'name': 'punctuation.definition.string.end.gsc'
-    'match': '(")(?:(\\\\["tnr\\\\]|&&[1-9])|(&&0|\\\\.)|[^"])*(")'
+    'match': '(")(?:(\\\\["tnr\\\\]|&&[1-9])|(&&0)|(\\\\.)|[^"])*(")'
     'name': 'string.quoted.double.gsc'
   'keywords':
     'patterns': [
       {
-        'match': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill)\\b'
+        'match': '\\b(break(point)?|case|continue|default|else|for|if|return|switch|thread|waittillframeend|while|wait|endon|waittill|notify)\\b'
         'name': 'keyword.control.gsc'
       }
       {
         'match': '\\b(game|level|self)\\b'
         'name': 'storage.identifier.gsc'
+      }
+      {
+       'match': '(?:[-+*/%&|^]|<<|>>)?='
+       'name': 'keyword.operator.assignment.gsc'
+      }
+      {
+       'match': '\\-\\-|\\+\\+'
+       'name': 'keyword.operator.increment-decrement.gsc'
+      }
+      {
+       'match': '[-+*/%]'
+       'name': 'keyword.operator.arithmetic.gsc'
+      }
+      {
+       'match': '!|&&|\\|\\|'
+       'name': 'keyword.operator.logical.gsc'
+      }
+      {
+       'match': '<<|>>|[~^&|]'
+       'name': 'keyword.operator.bitwise.gsc'
+      }
+      {
+       'match': '[=!<>]?=|<|>'
+       'name': 'keyword.operator.comparison.gsc'
+      }
+      {
+        'match': ';'
+        'name': 'punctuation.terminator.expression.gsc'
+      }
+      {
+        'begin': '\\['
+        'beginCaptures':
+          '0':
+            'name': 'punctuation.section.array.begin.gsc'
+        'end': '\\]'
+        'endCaptures':
+          '0':
+            'name': 'punctuation.section.array.end.gsc'
+        'patterns': [
+          {
+            'include': '#code'
+          }
+        ]
       }
     ]
   'stockfunctions_cod4':
