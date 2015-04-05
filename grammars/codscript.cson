@@ -1,6 +1,7 @@
 'scopeName': 'source.gsc'
 'name': 'CoDScript'
 'fileTypes': [
+  'csc'
   'gsc'
 ]
 'patterns': [
