@@ -1,0 +1,60 @@
+'scopeName': 'source.codstr'
+'name': 'CoD Localized Strings'
+'fileTypes': [
+  'str'
+]
+'patterns': [
+  {
+    'begin': '//'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.comment.codstr'
+    'end': '\\n'
+    'name': 'comment.line.double-slash.codstr'
+  }
+  {
+    'captures':
+      '1':
+        'name': 'keyword.control.codstr'
+      '2':
+        'name': 'punctuation.definition.string.begin.codstr'
+      '3':
+        'name': 'constant.character.escape.codstr'
+      '4':
+        'name': 'invalid.illegal.unknown-escape.codstr'
+      '5':
+        'name': 'invalid.deprecated.unknown-escape.codstr'
+      '6':
+        'name': 'punctuation.definition.string.end.codstr'
+    'match': '(LANG_ENGLISH|LANG_GERMAN)\\s*(")(?:(\\\\["tnr\\\\]|&&[1-9]|#same)|(&&0)|(\\\\.)|[^"])*(")'
+    'name': 'string.quoted.double.codstr'
+  }
+  {
+    'captures':
+      '1':
+        'name': 'keyword.control.codstr'
+      '2':
+        'name': 'punctuation.definition.string.begin.codstr'
+      '3':
+        'name': 'punctuation.definition.string.end.codstr'
+    'match': '(CONFIG|VERSION|FILENOTES)\\s*(")[^"]*(")'
+    'name': 'string.quoted.double.codstr'
+  }
+  {
+    'match': '(REFERENCE)\\s+([^"\\s]+)'
+    'captures':
+      '1':
+        'name': 'keyword.control.codstr'
+      '2':
+        'name': 'variable.other.codstr'
+    'name': 'something.something.codstr'
+  }
+  {
+    'match': 'ENDMARKER'
+    'name': 'keyword.control.codstr'
+  }
+  {
+    'match': '[^\\s]+'
+    'name': 'invalid.illegal.codstr'
+  }
+]
