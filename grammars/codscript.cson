@@ -355,7 +355,7 @@
         'name': 'keyword.control.gsc'
       }
       {
-        'match': '\\b(game|level|self)\\b'
+        'match': '\\b(game|level|self|player)\\b'
         'name': 'storage.identifier.gsc'
       }
       {
