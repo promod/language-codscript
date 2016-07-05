@@ -1,15 +1,12 @@
 {
-  "version": "1.1.0",
+  "version": "1.1.1",
   "name": "language-codscript",
   "description": "Atom language support for CoDScript",
   "repository": {
     "type": "git",
-    "url": "https://github.com/promod/language-codscript.git"
+    "url": "https://github.com/atrX/language-codscript.git"
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/promod/language-codscript/issues"
-  },
   "engines": {
     "atom": "*",
     "node": "*"
